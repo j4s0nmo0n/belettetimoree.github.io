@@ -138,7 +138,7 @@ python3 ntlmrelayx.py -t http://192.168.56.105/certsrv/certfnsh.asp -smb2support
 We can wait for un windows update client to request updates, or if we have access to compromise host, we search for updates. Here is w11-jason victime computer looking for updates:
 
 
-![Windows client looking for updates](/assets/img/WSUS-ESC8/window_client_looks_for_update.png)
+![Windows client looking for updates](/assets/img/WSUS-ESC8/windows_client_looks_for_update.png)
 
 
 We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca web enrollment in order to ask for a computer template. There it is:
