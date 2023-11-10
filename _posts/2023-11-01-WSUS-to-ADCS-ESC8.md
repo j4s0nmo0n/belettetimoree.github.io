@@ -188,7 +188,7 @@ We use this session key (from our TGT) to decrypt PAC and the NT hash.
 ![Windows client looking for updates](/assets/img/ASK_TGS_U2U.png)
 
 
-We then have w11-jason$ account NT hash, let's verify it with our new favorite network pentest tool [netexec] (https://www.netexec.wiki/).
+We then have w11-jason$ account NT hash, let's verify it with our new favorite network pentest tool [netexec](https://www.netexec.wiki/).
 ```bash
 nxc smb 192.168.56.105 -u  w11-jason\$ -H "8a03b8e0fb9728ee5d6dd1eb356a5270"
 ```
