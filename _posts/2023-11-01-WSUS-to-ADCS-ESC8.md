@@ -150,7 +150,7 @@ We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca w
 We can have a look on what happened with Wireshark:
 
 
-![Windows client looking for updates](/assets/img/wirshark.png)
+![Windows client looking for updates](/assets/img/wireshark.png)
 
 
 - 1- w11-jason computer (192.168.56.108) sends us request for update to our Web server on port :80 (remember that we transfert all incoming traffic on port 8530 to port 80). w11-jason asks for an update to us as we are acting as wsus-jason at 192.168.56.114). We send him bak a HTTP 401 error code..
