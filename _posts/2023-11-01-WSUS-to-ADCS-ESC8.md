@@ -34,7 +34,7 @@ On each of these computers, the **W**indows **U**pdate **A**uto **U**pdate **Cl*
   
 ### Use of Powershell to find updates
 
-It is possible for domain servers and computers  to look for update by using Powershell. Powershell modules like PoshWSUS
+It is possible for domain servers and computers  to look for update by using Powershell.
 
 ## WSUS Attack
 
