@@ -140,6 +140,7 @@ We can wait for un windows update client to request updates, or if we have acces
 ![Windows client looking for updates](/assets/img/WSUS-ESC8/window_client_looks_for_update.png)
 
 We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca web enrollment in order to ask for a computer template. There it is:
+
 ![Windows client looking for updates](/assets/img/ESC8_relay.png)
 
 We can have a look on what happened with Wireshark:
@@ -176,6 +177,7 @@ We use this session key (from our TGT) to decrypt PAC and the NT hash.
 
 ![Windows client looking for updates](/assets/img/Ask_TGS_U2U.png)
 
+
 We then have w11-jason$ account NT hash, let's verify it with our new favorite network pentest tool [netexec] (https://www.netexec.wiki/).
 ```bash
 nxc smb 192.168.56.105 -u  w11-jason\$ -H "8a03b8e0fb9728ee5d6dd1eb356a5270"
@@ -190,6 +192,7 @@ nxc smb w11-jason.jo.local -u 'w11-jason$' -H '8a03b8e0fb9728ee5d6dd1eb356a5270'
 
 ![Windows client looking for updates](/assets/img/S4U_nxc.png)
 
+
 There it is!! From now we can do whatever post-exploitation action we want on the host like dumping credentials, have administration access and so one.
 
 ## Another way to take advantage of the situation
@@ -198,7 +201,9 @@ I noticed during many network penetration tests that powershell scripts using mo
 This time one our victime computer w11-jason, PSWindowsUpdate is used to connect to WSUS server:
 
 ![Windows client looking for update using PoshWSUS](/assets/img/PoshWSUS-tentative-connection.png)
+
 While listening in the wire with ntlmrelayx, we can see that the certificate request is made but with the domain user account ibrahim and of course the certifate request failed as the template used is incorrect:
+
 ![Windows client looking for update using PoshWSUS](/assets/img/demande_certificat_ibrahim.png)
 
 When we retry to relay using the correct template "user" we request and obtain user certificate:
