@@ -137,15 +137,21 @@ python3 ntlmrelayx.py -t http://192.168.56.105/certsrv/certfnsh.asp -smb2support
 ```
 We can wait for un windows update client to request updates, or if we have access to compromise host, we search for updates. Here is w11-jason victime computer looking for updates:
 
+
 ![Windows client looking for updates](/assets/img/WSUS-ESC8/window_client_looks_for_update.png)
+
 
 We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca web enrollment in order to ask for a computer template. There it is:
 
+
 ![Windows client looking for updates](/assets/img/ESC8_relay.png)
+
 
 We can have a look on what happened with Wireshark:
 
+
 ![Windows client looking for updates](/assets/img/wirshark.png)
+
 
 - 1- w11-jason computer (192.168.56.108) sends us request for update to our Web server on port :80 (remember that we transfert all incoming traffic on port 8530 to port 80). w11-jason asks for an update to us as we are acting as wsus-jason at 192.168.56.114). We send him bak a HTTP 401 error code..
 - 2- We (192.168.56.115) request a certificate to jo-ad-dc-19-ca (192.168.56.105) by web enrollment, and it sends back a HTTP 401 error. 
