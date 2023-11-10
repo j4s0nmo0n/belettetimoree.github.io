@@ -28,7 +28,7 @@ Before diving into the subject, let's briefly talk about WSUS and the ADCS vulne
 A Group Policy Object is pushed and applied to a group of domain computers that use WSUS server for their updates.
 On each of these computers, the **W**indows **U**pdate **A**uto **U**pdate **Cl**lien**t** binary - wuauclt.exe was used to look frequently for updates by contacting the WSUS server. That binary is now [deprecated](https://learn.microsoft.com/en-us/windows-server/get-started/removed-deprecated-features-windows-server-2016).
 
-We can force updates to be searched and installed using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, the client computer communicates with WSUS server using HTTP(S) /SOAP XML web service. Which means all update procedure is done using web service. The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML are :
+We can search and install updates by using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, the client computer communicates with WSUS server using HTTP(S) /SOAP XML web service. Which means all update procedure is done using web service. The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML are :
 
 - SyncUpdates : sending a list of currently updates.
 
