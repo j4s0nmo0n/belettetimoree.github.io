@@ -181,7 +181,7 @@ We use this session key (from our TGT) to decrypt PAC and the NT hash.
  python3 /opt/PKINITtools/getnthash.py jo.local/w11-jason\$ -key f00b6e57ffaf6f23002b39d72ed6f34e0bfa9824db4fe8ccbe28f82b4c96119b
 ```
 
-![Windows client looking for updates](/assets/img/Ask_TGS_U2U.png)
+![Windows client looking for updates](/assets/img/ASK_TGS_U2U.png)
 
 
 We then have w11-jason$ account NT hash, let's verify it with our new favorite network pentest tool [netexec] (https://www.netexec.wiki/).
