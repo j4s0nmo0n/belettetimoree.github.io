@@ -165,7 +165,7 @@ Since we got the certificate let's authenticate with PKINIT to the domain. We us
 ```bash
  python3 /opt/PKINITtools/gettgtpkinit.py -pfx-base64 \$(cat a.b64 ) 'jo.local/W11-jason$' 'win11.ccache' -dc-ip 192.168.56.105
 ```
-![Windows client looking for updates](/assets/img/Ask_TGT_PKINIT.png)
+![Asking  for tgt with PKINIT](/assets/img/Ask_TGT_PKINIT.png)
 
 Once we got the TGT, we load it in memory with KRB5CCNAME export command. The klist command allows us to list the loaded Kerberos tickets, we can see that we have obtained a TGT as W11-JASON$, the machine account we ask certificate for.
 
