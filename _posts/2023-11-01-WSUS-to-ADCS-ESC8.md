@@ -153,11 +153,11 @@ We can have a look on what happened with Wireshark:
 ![Windows client looking for updates](/assets/img/wireshark.png)
 
 
-- 1 - w11-jason computer (192.168.56.108) sends us request for update to our Web server on port :80 (remember that we transfert all incoming traffic on port 8530 to port 80). w11-jason asks for an update to us as we are acting as wsus-jason at 192.168.56.114). We send him bak a HTTP 401 error code..
-- 2 - We (192.168.56.115) request a certificate to jo-ad-dc-19-ca (192.168.56.105) by web enrollment, and it sends back a HTTP 401 error. 
-- 3 - jo-ad-dc-19-ca asks us to authenticate with NTLM. We send the same response to w11-jason.
-- 4 - w11-jason authenticates to us with NTLM, we simply relay it to jo-ad-dc-19-ca to request a **machine** certificate.
-- 5 - We got the 200 HTTP response from jo-ad-dc-19-ca and we simply query and download the certificate for w11-jason$ computer account. 
+- 1  w11-jason computer (192.168.56.108) sends us request for update to our Web server on port :80 (remember that we transfert all incoming traffic on port 8530 to port 80). w11-jason asks for an update to us as we are acting as wsus-jason at 192.168.56.114). We send him bak a HTTP 401 error code..
+- 2  We (192.168.56.115) request a certificate to jo-ad-dc-19-ca (192.168.56.105) by web enrollment, and it sends back a HTTP 401 error. 
+- 3  jo-ad-dc-19-ca asks us to authenticate with NTLM. We send the same response to w11-jason.
+- 4  w11-jason authenticates to us with NTLM, we simply relay it to jo-ad-dc-19-ca to request a **machine** certificate.
+- 5  We got the 200 HTTP response from jo-ad-dc-19-ca and we simply query and download the certificate for w11-jason$ computer account. 
 
 Since we got the certificate let's authenticate with PKINIT to the domain. We use then PKINITools  [PKINITools](https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/) kit's gettgtpkinit.py to obtain our TGT:
 
