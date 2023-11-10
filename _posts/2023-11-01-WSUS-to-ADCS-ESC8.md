@@ -96,7 +96,7 @@ It is also possible to sniff traffic using Wireshark in order to find main endpo
 
 - ADCS HTTP-based enrollment method is enabled on the domain with HTTP enabled and EPA disabled. In other words, ADCS vulnerable to ESC8.
 
-![ADCS HTTP Web enrollment](/assets/img/WSUS-ESC8/web_enrollment.png)
+![ADCS HTTP Web enrollment](/assets/img/web_enrollment.png)
 
 
 
