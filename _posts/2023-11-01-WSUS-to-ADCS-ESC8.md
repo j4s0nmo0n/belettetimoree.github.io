@@ -214,7 +214,7 @@ While listening in the wire with ntlmrelayx, we can see that the certificate req
 
 When we retry to relay using the correct template "user" we request and obtain user certificate:
 
-![Windows client looking for update using PoshWSUS](/assets/Ibrhaim_certificat.png)
+![Windows client looking for update using PoshWSUS](/assets/img/Ibrhaim_certificat.png)
 
 Depending on the user privileges in the domain that attack may be interesting to consider, especially when there is a privileged user accont or service account that runs this command in order to look for updates.
 
