@@ -28,17 +28,18 @@ Before diving into the subject, let's briefly talk about WSUS and the ADCS vulne
 A Group Policy Object is pushed and applied to a group of domain computers that use WSUS server for their updates.
 On each of these computers, the **W**indows **U**pdate **A**uto **U**pdate **Cl**lien**t** binary - wuauclt.exe was used to look frequently for updates by contacting the WSUS server. That binary is now [deprecated](https://learn.microsoft.com/en-us/windows-server/get-started/removed-deprecated-features-windows-server-2016).
 
-We can search and install updates by using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, the client computer communicates with WSUS server using HTTP(S) /SOAP XML web service. Which means all update procedure is done using web service. The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML are :
+We can search and install updates by using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, client computer communicates with WSUS server using HTTP(S) /SOAP XML web service. Which means all update procedure is done using web service. The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML are :
 
 - SyncUpdates : sending a list of currently updates.
 
 - GetExtendedUpdateInfo: checks for new update ids.
 
   While responding to GetExtendedUpdateInfo request, WSUS server sends metadata, handlers ( for instance CommandLineInstallation allow to execute Microsoft signed binary with specific arguments), URLs from where to download and even installation note for every new update.
+
   
 ### Use of Powershell to find updates
 
-It is possible for domain servers and computers  to look for update by using Powershell.
+It is possible for domain servers and computers  to look for update by using Powershell. Endpoint /ApiRemoting30/WebServices.asmx is requested updates are installed using WSUS Powershell modules.
 
 ## WSUS Attack
 
@@ -141,20 +142,20 @@ python3 ntlmrelayx.py -t http://192.168.56.105/certsrv/certfnsh.asp -smb2support
 ```
 We can wait for un windows update client to request updates, or if we have access to compromise host, we search for updates. Here is w11-jason victime computer looking for updates:
 
-
 ![Windows client looking for updates](/assets/img/windows_client_looks_for_updates.png)
+
 
 
 We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca web enrollment in order to ask for a computer template. There it is:
 
-
 ![Windows client looking for updates](/assets/img/ESC8_relay.png)
+
 
 
 We can have a look on what happened with Wireshark:
 
-
 ![Windows client looking for updates](/assets/img/wireshark.png)
+
 
 
 - 1  w11-jason computer (192.168.56.108) sends us request for update to our Web server on port :80 (remember that we transfert all incoming traffic on port 8530 to port 80). w11-jason asks for an update to us as we are acting as wsus-jason at 192.168.56.114). We send him bak a HTTP 401 error code..
@@ -170,6 +171,7 @@ Since we got the certificate let's authenticate with PKINIT to the domain. We us
  python3 /opt/PKINITtools/gettgtpkinit.py -pfx-base64 \$(cat a.b64 ) 'jo.local/W11-jason$' 'win11.ccache' -dc-ip 192.168.56.105
 ```
 ![Asking  for tgt with PKINIT](/assets/img/Ask_TGT_PKINIT.png)
+
 
 Once we got the TGT, we load it in memory with KRB5CCNAME export command. The klist command allows us to list the loaded Kerberos tickets, we can see that we have obtained a TGT as W11-JASON$, the machine account we ask certificate for.
 
@@ -188,11 +190,13 @@ We use this session key (from our TGT) to decrypt PAC and the NT hash.
 ![Windows client looking for updates](/assets/img/ASK_TGS_U2U.png)
 
 
+
 We then have w11-jason$ account NT hash, let's verify it with our new favorite network pentest tool [netexec](https://www.netexec.wiki/).
 ```bash
 nxc smb 192.168.56.105 -u  w11-jason\$ -H "8a03b8e0fb9728ee5d6dd1eb356a5270"
 ```
 ![Windows client looking for updates](/assets/img/Verification_compte_nxc.png)
+
 
 As we have w11-jason NT hash, we can simply perform [silver ticket](https://en.hackndo.com/kerberos-silver-golden-tickets/?_gl=1*1xbhafq*_ga*MTQ1MTUwNzkwOS4xNjk1MDIyMzU5*_ga_DNP6NC70FV*MTY5OTMwOTI1OS4yLjAuMTY5OTMwOTI1OS4wLjAuMA..#silver-ticket) attack and impersonate domain administrator user on the machine. Usually to perform S4U attacks, we use impacket. To proceed, we have to find domain SID followed by asking a domain administrator ticket to the computer account we compromised. Recently netexec added [new features]()- giving us a huge shortcut to perform this attack.
 
@@ -203,22 +207,56 @@ nxc smb w11-jason.jo.local -u 'w11-jason$' -H '8a03b8e0fb9728ee5d6dd1eb356a5270'
 ![Windows client looking for updates](/assets/img/S4U_nxc.png)
 
 
+
 There it is!! From now we can do whatever post-exploitation action we want on the host like dumping credentials, have administration access and so one.
 
 ## Another way to take advantage of the situation
 I noticed during many network penetration tests that powershell scripts using most of the time ** PSWindowsUpdate** module on some servers that system administrators run periodically in order to search for updates from WSUS. And of course the WSUS server is misconfigurered. These modules use user or service account running them in Active Directory network to connect to WSUS server which means we can relay user/service account NTLM authentication as well and ask for certificate to ADCS Web enrollment. Let's dive into it with our previous setup.
 
-This time one our victime computer w11-jason, PSWindowsUpdate is used to connect to WSUS server:
+This time one our victime computer w11-jason, .NET API Microsoft UpdateServices is used to connect to WSUS server:
 
 ![Windows client looking for update using PoshWSUS](/assets/img/PoshWSUS-tentative-connection.png)
+
+
+[PoshWSUS](https://github.com/proxb/PoshWSUS) in the wild pulls all WSUS configurations it can find in registry key and makes connection to WSUS server found. Part fof the code which interests us is :
+
+```powershell
+    ...
+    cut
+    ...
+    
+    Process {
+        If (-NOT $PSBoundParameters.ContainsKey('WSUSServer')) {
+            #Attempt to pull WSUS server name from registry key to use            
+            If ((Get-ItemProperty -Path HKLM:\Software\Policies\Microsoft\Windows\WindowsUpdate -Name WUServer).WUServer -match '(?<Protocol>^http(s)?)(?:://)(?<Computername>(?:(?:\w+(?:\.)?)+))(?::)?(?<Port>.*)') {
+                $WsusServer = $Matches.Computername
+                $Port = $Matches.Port
+            }
+        }
+        #Make connection to WSUS server  
+        Try {
+            Write-Verbose "Connecting to $($WsusServer) <$($Port)>"
+            $Script:Wsus = [Microsoft.UpdateServices.Administration.AdminProxy]::GetUpdateServer($wsusserver,$Secure,$port)  
+            $Script:_wsusconfig = $Wsus.GetConfiguration()
+            Write-Output $Wsus  
+        } Catch {
+            Write-Warning "Unable to connect to $($wsusserver)!`n$($error[0])"
+        } Finally {
+            $ErrorActionPreference = 'Continue' 
+        } 
+```
+
+
 
 While listening in the wire with ntlmrelayx, we can see that the certificate request is made but with the domain user account ibrahim and of course the certifate request failed as the template used is incorrect:
 
 ![Windows client looking for update using PoshWSUS](/assets/img/demande_certificat_ibrahim.png)
 
+
 When we retry to relay using the correct template "user" we request and obtain user certificate:
 
 ![Windows client looking for update using PoshWSUS](/assets/img/Ibrhaim_certificat.png)
+
 
 Depending on the user privileges in the domain that attack may be interesting to consider, especially when there is a privileged user accont or service account that runs this command in order to look for updates.
 
