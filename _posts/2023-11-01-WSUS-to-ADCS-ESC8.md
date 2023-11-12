@@ -180,6 +180,9 @@ export KRB5CCNAME=win11.ccache
 klist
 ```
 
+![klist after w11 obtained TGT](/assets/img/klist-w11.png)
+
+
 As we authenticated with PKINIT, client account NT hash is encrypted in the PAC (Privilege Attribute Certificate). In order to read the PAC and have access to client's NT hash, the client's must use another Kerberos extension called user to user (U2U). User to user is well explained in [Dirk-jan's blog post](https://datatracker.ietf.org/doc/html/draft-ietf-cat-user2user-02). The idea here is to request a service ticket to ourself while adding our TGT as "additional tickets" during the KRB_TGS_REQ. We will be able to find out the PAC and the NT hash when we receive KDC response as it uses the session key of our TGT (that we know) to encrypt the PAC.
 We use this session key (from our TGT) to decrypt PAC and the NT hash. 
 
