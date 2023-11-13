@@ -1,5 +1,5 @@
-Here you can say lots of fun things about your site.
+Hello there, I am BeletteTimoree,
 
-Maybe say a some things about yourself.
+That is a simple blog to share a bit of knowledge.
 
-Or maybe what you plan to blog about.
+Thank you for reading.
