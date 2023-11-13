@@ -19,8 +19,7 @@ avatar: "/assets/img/signal-2022-05-13-08-47-39-251.jpg"
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
-#theme: "minima"
-theme: "jekyl-theme-chirpy"
+theme: "minima"
 rss: rss
 
 kramdown:
