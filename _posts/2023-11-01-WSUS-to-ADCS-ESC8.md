@@ -83,7 +83,8 @@ In order to take advantage of the situation, let's have a look on the prerequisi
 
 
 - First, it is important to be able to intercept traffic, of both windows update client and WSUS server. In other words we are able to perform ARP-spoof attack, which means we are on the same network as both.
-- WSUS server configured to work with HTTP. WSUS server protocole configuration can be found by querying registry key: 
+- WSUS server configured to work with HTTP. WSUS server protocole configuration can be found by querying registry key:
+  
 ```powershell
 PS > reg query HKLM\Software\Policies\Microsoft\Windows\WindowsUpdate /v WUServer
 
