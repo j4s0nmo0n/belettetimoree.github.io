@@ -9,10 +9,7 @@ While reading that last great blog post, I noticed that it was left to the reade
 
 Before diving into the subject, let's briefly talk about WSUS and the ADCS vulnerability we want to combine with.
 
-
-
 # WSUS 101
-
 
 ## WSUS overview
 
@@ -42,6 +39,7 @@ Another way to exploit WSUS misconfiguration is to take advantage of the authent
 
 
 # ADCS 101
+
 ## Public Key Infrastructure
 
 A PKI (Public Key Infrastructure) is an infrastructure used to create, manage, and revoke certificates as well as public/private keys.
@@ -70,7 +68,6 @@ Initially, all client's updates are installed by LocalSytem NT Authority\\System
 PKINIT is a asymmetric preauthentication mechanism for Kerberos which uses X.509 certificates to authenticate the KDC to clients and vice versa. The only changes compared with conventional authentication password and symmetrical keys concern the KRB_AS_REQ and KRB_AS_REP exchanges. Indeed client signs the timestamp with its private key associated with a valid certificate. Only fews certificates' EKUs allow clients to use certificate for PKINIT authentication (EKU **client authentication** for instance).
 
 # Practical situation
-
 Let's take the following environment test:
 - AD-DC-19 (192.168.56.105): domaine controlleur (Windows Server 2019), which hosts Certificate Authority Service too. The CA name is jo-ad-ad-dc-19-ca.
 - wsus-jo (192.168.56.114): Windows Service Update Server (Windows Server 2019), which hosts WSUS and delivers updates to computers through **HTTP** IIS server. 
@@ -78,7 +75,6 @@ Let's take the following environment test:
 - ParrotOS (192.168.56.115) which is our attacker machine. 
 
 # Exploitation Prerequisites
-
 In order to take advantage of the situation, let's have a look on the prerequisites:
 
 
@@ -259,14 +255,12 @@ When we retry to relay using the correct template "user" we request and obtain u
 Depending on the user privileges in the domain that attack may be interesting to consider, especially when there is a privileged user accont or service account that runs this command in order to look for updates.
 
 # Conclusion
-
 In this blog post we didn't bring any new concept of attack, we tried to find another way to abuse WSUS misconfiguration in Active Directory environment.WSUS and ADCS can lead to a domain computer compromise when they are both misconigured and when MITM is possible by any ways.
 WSUS should be configured over HTTPS in one hand, and ADCS web enrollment should be configured with EPA.
 Defender can take advantage of Windows events logs (for instance event 4768 for PKINIT authentication) when investigating some suspicious behavior from computer accounts. Some events id like 4768 related to PKINIT authentication.
 
 
 # Acknowledgements
-
 - [Gosecure](https://www.gosecure.net/blog/) for their incredible works and finding on the subject. They gave me the motivation to dig the subject with all their [blog posts](https://www.gosecure.net/blog/2021/11/22/gosecure-investigates-abusing-windows-server-update-services-wsus-to-enable-ntlm-relaying-attacks/).
 - [Paul Stone - Alex Chapman](https://www.blackhat.com/docs/us-15/materials/us-15-Stone-WSUSpect-Compromising-Windows-Enterprise-Via-Windows-Update.pdf) for a clear explanation on how does clients updates and WSUS server communicate.
 - [Hocine](https://twitter.com/Sant0rryu) for his brilliant blogpost about [Certpotatoe attack](https://sant0rryu.github.io/posts/CertPotato/)
