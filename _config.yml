@@ -37,6 +37,10 @@ titles_from_headings:
 defaults:
   - scope:
       path: ""
-      type: post
     values:
-      tags: Other
+      image: https://pbs.twimg.com/profile_images/1546522169345298432/e7XsBGdA_400x400.jpg # Apply default site image
+  - scope:
+      path: ""
+      type: posts
+    values:
+      tags:
