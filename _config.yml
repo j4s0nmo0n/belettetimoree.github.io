@@ -38,7 +38,7 @@ defaults:
   - scope:
       path: ""
     values:
-      image: https://pbs.twimg.com/profile_images/1546522169345298432/e7XsBGdA_400x400.jpg # Apply default site image
+      image: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkx9kNWR1MFjJUYkuoL-8JevNQ6-WE-08SV_wKx8tFVfIqM8VDd0AAW3HngLFDeTu9Z8w&usqp=CAU # Apply default site image
   - scope:
       path: ""
       type: posts
