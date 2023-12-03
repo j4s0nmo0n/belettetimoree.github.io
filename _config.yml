@@ -1,4 +1,4 @@
-title: "WSUS to ADCS ESC8 exploit"
+title: "Belette Timorée"
 tagline: A blog to share hacking a bit of knowledge. 
 author: "Bébé Joël HIEN(@belettetimoree)"
 description: "Yet another way to exploit WSUS misconfiguration and MITM." # This will show up in places like twitter, linkedin, etc, if you share your sites url as a post.
@@ -15,7 +15,7 @@ linkedin_username: "joël-hien-071476b6"
 #pinterest_username: username
 #youtube_username: username
 #googleplus_username: +username
-avatar: "/assets/img/signal-2022-05-13-08-47-39-251.jpg"
+avatar: "assets/img/signal-2022-05-13-08-47-39-251.jpg"
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
 #########################################################################################
