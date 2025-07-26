@@ -1,8 +1,6 @@
-# Soaphound.py - Another way of collecting AD objects from Linux - ADWS 
-
 ---
 layout: post
-title: "Soaphound.py - Soaphound.py - Another way of collecting AD objects from Linux - ADWS "
+title: "Soaphound.py - Another way of collecting AD objects from Linux - ADWS "
 date: 2025-07-26
 ---
 
@@ -118,7 +116,7 @@ The tool is currently being improved to cover all specific data collection scena
 
 While writing this blog post, a new article from SoaPy was released, adding new features to perform more LDAP collections. Output of this new version of SoaPy can be used as an input to BOFHound. 
 
-There is the Github project of Soaphound.py : 
+There is the Github project of [Soaphound.py](https://github.com/j4s0nmo0n/Soaphound.py) 
 # Acknowledgements and references
 
 - [Falcon Force Team](https://falconforce.nl/soaphound-tool-to-collect-active-directory-data-via-adws/) for the initial inspiration.
