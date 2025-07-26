@@ -27,7 +27,7 @@ Here is a simplified illustration of LDAP requests through ADWS below:
 
 
 
-![LDAP requests through ADWS service](/assets/img/ADWS_LDAP.png)
+![LDAP requests through ADWS service]({{ site.baseurl }}/assets/img/ADWS_LDAP.png)
 
 
 ### Protocols overview and how it works
