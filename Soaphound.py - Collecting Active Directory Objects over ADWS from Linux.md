@@ -57,9 +57,8 @@ An interesting point to notice is that before all ADWS communications take place
 
 If an error occurs during negotiation or transfer, the stream is invalidated, and a new context must be established. This makes .NET NegotiateStream an efficient alternative to TLS for secure inter-process or client-server communication within Windows environments.
 
-Once the encrypted communication is established, different types of endpoints are requested by client to have a result. In add, authentication mechanism can differ following then endpoint client is requesting to; we can see it in Microsoft [MS-ADDM](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-addm/59205cf6-aa8e-4f7e-be57-8b63640bf9a4) paper. 
+Once the encrypted communication is established, different types of endpoints are requested by client to have a result. In add, authentication mechanism can differ following then endpoint client is requesting to; we can see it in Microsoft [MS-ADDM](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-addm/59205cf6-aa8e-4f7e-be57-8b63640bf9a4) paper. ADWS supports various operations, including reading directory data and altering object attributes.
 
-Operations ADWS allows include:
 
 Object view is handled through WS-Enumeration operations:
 
