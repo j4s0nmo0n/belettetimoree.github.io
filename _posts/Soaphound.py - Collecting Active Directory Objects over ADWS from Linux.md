@@ -27,7 +27,7 @@ Here is a simplified illustration of LDAP requests through ADWS below:
 
 
 
-![image-20250724163050290](assets/images/image-20250724163050290.png)
+![LDAP requests through ADWS service](assets/img/ADWS_LDAP.png)
 
 
 ### Protocols overview and how it works
