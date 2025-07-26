@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Soaphound.py - Another way of collecting AD objects from Linux - ADWS "
+date: 2025-07-26
+---
+
 # Soaphound.py - Another way of collecting AD objects from Linux - ADWS 
 
 Authors: [@belettet1m0ree](https://x.com/belettet1m0ree), [@Sant0rryu](https://x.com/Sant0rryu)
