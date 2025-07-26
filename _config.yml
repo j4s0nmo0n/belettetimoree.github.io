@@ -21,7 +21,7 @@ avatar: "assets/img/signal-2022-05-13-08-47-39-251.jpg"
 #########################################################################################
 theme: "minima"
 rss: rss
-
+baseurl: "/belettetimoree.github.io"
 include:
   - assets
 
