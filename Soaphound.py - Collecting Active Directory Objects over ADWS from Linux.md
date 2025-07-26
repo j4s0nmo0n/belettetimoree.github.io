@@ -47,6 +47,7 @@ net.tcp://<hostname>:9389/ActiveDirectoryWebServices/<ServiceName>
 Key endpoints we are interested in include:
 
 **Enumeration** : allows to query and read directory objects.
+
 **Resource**: allows to write or modify directory objects.
 
 An interesting point to notice is that before all ADWS communications take place, the .NET NegotiateStream Protocol (MS-NNS) insures mutual authentication and provides encryption. The .NET NegotiateStream protocol provides a lightweight and certificate-free way to establish secure, authenticated communication over TCP. It uses SPNEGO to negotiate the appropriate security mechanis, typically Kerberos or NTLM, without requiring TLS. The protocol works in two phases:
