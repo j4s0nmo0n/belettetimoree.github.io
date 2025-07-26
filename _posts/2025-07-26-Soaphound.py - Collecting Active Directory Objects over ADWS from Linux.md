@@ -2,7 +2,7 @@
 
 ---
 layout: post
-title: "Soaphound.py – Collecting Active Directory Objects over ADWS from Linux"
+title: "Soaphound.py - Soaphound.py - Another way of collecting AD objects from Linux - ADWS "
 date: 2025-07-26
 ---
 
