@@ -117,7 +117,7 @@ There is the Github project of Soaphound.py :
 - [Falcon Force Team](https://falconforce.nl/soaphound-tool-to-collect-active-directory-data-via-adws/) for the initial inspiration.
 - [Bloodhound.py](https://github.com/dirkjanm/BloodHound.py), for this amazing implementation of Bloodhound ingestor.
 - [Microsoft](https://learn.microsoft.com/en-us/openspecs/windows_psrotocols/ms-addm/59205cf6-aa8e-4f7e-be57-8b63640bf9a4) for the official protocol documentation.
-- [ERNW][https://insinuator.net/2016/08/pentesting-webservices-with-net-tcp-binding/] for the initial boost.
+- [ERNW](https://insinuator.net/2016/08/pentesting-webservices-with-net-tcp-binding/) for the initial boost.
 - [X-force Red](https://www.ibm.com/think/x-force/stealthy-enumeration-of-active-directory-environments-through-adws) for their brilliant implementation of NBFX and research insights.
 - [Rabobank red team](https://rabobank.jobs/en/techblog/adws-an-unconventional-path-into-active-directory-luc-kolen/) for sharing valuable resources and operational insights.
 - [Lionel SIDIBE](https://x.com/ilionels) you know what you did ;)
