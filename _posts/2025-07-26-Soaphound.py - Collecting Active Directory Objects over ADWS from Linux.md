@@ -65,20 +65,31 @@ Operations ADWS allows include:
 Object view is handled through WS-Enumeration operations:
 
 > **Enumerate**: Initializes an enumeration context based on a defined search query or filter expression.
+> 
 >  **Pull**: Retrieves result objects within the context of a previously established enumeration session.
+> 
 >  **Renew**: Extends the expiration time of an active enumeration context to maintain its validity.
+> 
 >  **GetStatus**: Returns the current expiration metadata associated with a specific enumeration context.
+> 
 >  **Release**: Gracefully disposes of a given enumeration context, releasing server-side resources.
 
  Object manipulation is handled through WS-Transfer operations:
 
 >  **Delete**: Removes an existing directory object.
+> 
 >  **Get**: Fetches one or more attributes from a directory object.
->  **Put**: Alters one or more attributes on a target object. The `Put` operation encompasses the following actions:
+> 
+>  **Put**: Alters one or more attributes on a target object.
+
+The `Put` operation encompasses the following actions:
 
 >    ​	**Add**: Appends a specified value to an attribute, or creates the attribute if it does not already exist.
+> 
 >    ​	**Replace**: Substitutes all existing values of a given attribute with a new set. If the attribute does not exist, it is created. If no values are provided,  the attribute is cleared.
+> 
 >    ​	**Delete**: Removes specified values from an attribute, or deletes the entire attribute if no value is given. Fails if the attribute is absent.
+> 
 >  **Create**: Instantiates a new directory object with the specified properties.
 
 In addition to perform LDAP query locally on the Domain Controller and send it back to client in SOAP XML encoded trafic, collecting Active Directory Object collect through ADWS is has benefits as this activity does not register under the LDAPSearch action type in DeviceEvents, it significantly reduces its visibility in common telemetry sources, making detection more challenging.
