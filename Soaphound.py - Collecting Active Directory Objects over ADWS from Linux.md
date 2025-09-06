@@ -99,7 +99,7 @@ In addition to perform LDAP query locally on the Domain Controller and send it b
 
 ## Existing tools
 
-Interesting tools exist and allow to collect domain objects through ADWS service: [PingCastle](https://www.pingcastle.com/) (C#), [Soaphound](https://github.com/FalconForceTeam/SOAPHound) (C#), [ADWSProxy](https://github.com/RabobankRedTeam/ADWSProxy) (C#), [SharpADWS](https://github.com/wh0amitz/SharpADWS) (C#) and [Soapy](https://github.com/xforcered/SoaPy) (Python).
+Interesting tools exist and allow to collect domain objects through ADWS service: [PingCastle](https://www.pingcastle.com/) (C#), [Soaphound](https://github.com/FalconForceTeam/SOAPHound) (C#), [ADWSProxy](https://github.com/RabobankRedTeam/ADWSProxy) (C#), [SharpADWS](https://github.com/wh0amitz/SharpADWS) (C#) and [Soapy](https://github.com/logangoins/SoaPy) (Python).
 
 The first tool to introduce enumeration via ADWS in an offensive context was Soaphound. However, as it is mentioned in their blog post, the tool essentially performs only two major requests during its execution. 
 
